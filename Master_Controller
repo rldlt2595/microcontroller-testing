@@ -1,0 +1,159 @@
+//This program tests and reads data from all digital and analog pins and prints the values to the monitor with a sampling speed of 1 Hz
+
+ 
+// Include Arduino Wire library for I2C
+#include <Wire.h>
+ 
+// Define Slave I2C Address
+#define SLAVE_ADDR 1
+ 
+// Define Slave answer size
+#define ANSWERSIZE 12
+
+//char inByte1 = '1';
+//bool pin2_status;
+//int rd;
+int a;
+int analog0;
+int analog1; 
+int analog2; 
+int analog3;
+int analog4;
+int analog5;
+
+float analog0_volt, analog1_volt, analog2_volt, analog3_volt, analog4_volt, analog5_volt;  
+boolean digital2, digital3, digital4, digital5, digital6, digital7, digital8, digital9, digital10, digital11, digital12, digital13;
+
+ //Testing Master Arduino
+// ------------------------------------------------------------------------------------------------------------------------------------
+void setup() {
+   // Initialize I2C communications as Master
+  Wire.begin();
+  
+  // Setup serial monitor
+  Serial.begin(9600);
+  Serial.println("I2C Master Demonstration");
+
+  // put your setup code here, to run once:
+Serial.begin(9600);  
+pinMode(A1, INPUT); 
+pinMode(A2, INPUT);
+pinMode(A5, INPUT);
+  
+pinMode (2, INPUT);
+pinMode (3, OUTPUT);
+pinMode (4, OUTPUT);
+pinMode (5, OUTPUT);
+pinMode (6, OUTPUT);
+pinMode (7, OUTPUT);
+pinMode (8, OUTPUT);
+pinMode (9, OUTPUT);
+pinMode (10, OUTPUT);
+pinMode (11, OUTPUT);
+pinMode (12, OUTPUT);
+pinMode (13, OUTPUT);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+digital2 = digitalRead(2);       //Reads data from digital port 2 and stores it in the variable
+
+if (digital2==HIGH){
+  for ( a=3; a<=13; a++){
+    digitalWrite(a, HIGH);
+  }
+  pin2_status= HIGH;
+  }
+else{
+   for ( a=3; a<=13; a++){
+    digitalWrite(a, LOW);
+    }
+  pin2_status= LOW; 
+}
+digital3 = digitalRead(3);       //used
+digital4 = digitalRead(4);       //used
+digital5 = digitalRead(5);       //used
+digital6 = digitalRead(6);       //used
+digital7 = digitalRead(7);       //used
+digital8 = digitalRead(8);       //used
+digital9 = digitalRead(9);       //used
+digital10 = digitalRead(10);     //used
+digital11 = digitalRead(11);
+digital12 = digitalRead(12);     //used
+digital13 = digitalRead(13);     //used 
+
+
+  //Convertion from digital value to voltage value
+   //Scales from 0-1023 (integers) to 0.0-5.0 (decimal numbers). 0=0V 1023=5V.
+ // analog0_volt = ((float)analog0 / 1023) * 5;  
+  analog1_volt = (analog1 / 1023.0) * 5;        
+  analog2_volt = (analog2 / 1023.0) * 5;
+  //analog3_volt = (analog3 / 1023.0) * 5;
+  //analog4_volt = (analog4 / 1023.0) * 5;
+  analog5_volt = (analog5 / 1023.0) * 5;
+
+   //Prints out data to the monitor
+  //Serial.print("   Analog2: ");      
+  Serial.println(analog0_volt);         
+  //Serial.print("   Analog1: ");    
+  Serial.println(analog1_volt);      
+ // Serial.print("   Analog2: ");    
+  Serial.println(analog2_volt);      
+  //Serial.print("   Analog3: ");    
+  Serial.println(analog3_volt);      
+ // Serial.print("   Analog4: ");    
+  Serial.println(analog4_volt);      
+  //Serial.print("   Analog5: ");    
+  Serial.println(analog5_volt);    
+  Serial.println("________");
+  //Serial.print("  - Digital2: ");       
+  Serial.println (digital2);           
+  //Serial.print ("   Digital3: ");   
+  Serial.println(digital3);   
+ // Serial.print ("   Digital4: ");   
+  Serial.println(digital4);      
+  //Serial.print ("   Digital5: ");  
+  Serial.println(digital5);          
+  //Serial.print ("   Digital6: ");   //The serial communication is not 
+  Serial.println(digital6);        
+ // Serial.print ("   Digital7: ");   
+  Serial.println(digital7);        
+ // Serial.print ("   Digital8: ");   
+  Serial.println(digital8);        
+ // Serial.print ("   Digital9: ");   
+  Serial.println(digital9);        
+ // Serial.print ("   Digital10: ");   
+  Serial.println(digital10);        
+ // Serial.print ("   Digital11: ");   
+  Serial.println(digital11);        
+//  Serial.print ("   Digital12: ");   
+  Serial.println(digital12);        
+ // Serial.print ("   Digital13: ");   
+  Serial.println(digital13);    
+  Serial.println("________");    
+  delay(3000);   
+
+   Serial.println("Write data to slave");
+  
+  // Write a charatre to the Slave
+  Wire.beginTransmission(SLAVE_ADDR);
+  Wire.write(pin2_status);
+  Wire.endTransmission();
+    
+  Serial.println("Receive data");
+  
+  // Read response from Slave
+  // Read back 12 characters
+  Wire.requestFrom(SLAVE_ADDR,ANSWERSIZE);
+  
+  // Add characters to char
+  char response = "" ;
+  while (Wire.available()) {
+      char b = Wire.read();
+      response += b;
+  } 
+  
+  // Print to Serial Monitor
+  Serial.println(response); //print onto serial monitor 
+}
+ 
